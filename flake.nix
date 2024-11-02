@@ -119,8 +119,8 @@
           drv = pkgs.writeScriptBin "deploy-wifi-setup" ''
             #!${pkgs.stdenv.shell}
 
-            PI_HOST="''${1:-pi@raspberrypi.local}"
-            PI_PATH="/home/pi/wifi-setup"
+            PI_HOST="''${1:-domino-display}"
+            PI_PATH="/opt/display/"
 
             echo "Deploying to $PI_HOST..."
 
