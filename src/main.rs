@@ -221,7 +221,7 @@ async fn main() -> bluer::Result<()> {
         ..Default::default()
     };
 
-    let handle = adapter.advertise(le_advertisement).await?;
+    let _handle = adapter.advertise(le_advertisement).await?;
     println!("Advertising WiFi configuration service...");
 
     // Keep the application running
@@ -232,7 +232,7 @@ async fn main() -> bluer::Result<()> {
     // The handle will be dropped when the main function ends
     #[allow(unreachable_code)]
     {
-        drop(handle);
+        drop(_handle);
         Ok(())
     }
 }

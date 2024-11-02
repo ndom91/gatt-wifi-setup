@@ -2,33 +2,44 @@
 
 Bluetooth GATT Server to accept Wifi Credentials
 
-## Getting Started
+## Develop
 
-If you're on NixOS, the development environment will be initialized as soon as
-you `cd` into the directory. Ensure you've run `direnv allow` once in the
-projects root directory. Alternatively, you can run `nix develop`.
+If you're on NixOS, run `direnv allow` once in the project's root directory.
+From then on, the development environment will be initialized as soon as you
+`cd` into the project's directory. Alternatively, you can run `nix develop`
+manually. Now you should have the correct version of Rust, pkg-config, etc.
+in your environment.
 
-From there you should have the correct version of Rust, pkg-config, etc.
+1. To run a development version of the project:
 
-1. To compile the project for your x86_64 host machine:
+```
+cargo run
+```
+
+## Build
+
+1. To compile a release version of the project for your `x86_64` host machine:
 
 ```bash
 nix build .#wifi-setup
+
+# Alternatively
+nix build
 ```
 
-2. To cross-compile for aarch64, i.e. a Raspberry Pi with an arm64 CPU:
+2. To cross-compile for `aarch64`, i.e. a Raspberry Pi
 
 ```bash
 nix build .#wifi-setup-aarch64
 ```
 
-## Deployment
+## Deploy
 
 To deploy the project on a Raspberry Pi, you'll need the following items:
 
 - A systemd service (see `systemd/wifi-setup.service`)
 - Bluetooth packages installed (`bluez` and `bluetooth`)
-- The binary compiled for aarch64 (see above)
+- The binary compiled for `aarch64` (see above)
 
 Alternatively, on NixOS you can use the deployment script found in the
 `flake.nix`. This will build the binary, copy it to your target and create the systemd service there for you.
@@ -37,7 +48,7 @@ Alternatively, on NixOS you can use the deployment script found in the
 nix run . -- pi@your-pi-hostname.local
 ```
 
-## Debugging
+## Debug
 
 On the Pi, you can check the logs of the service
 

@@ -89,6 +89,8 @@
             buildInputs = commonBuildInputs;
             nativeBuildInputs = [ pkgs.pkg-config ];
 
+            # buildType = "debug";
+
             cargoLock = {
               lockFile = ./Cargo.lock;
             };
@@ -102,6 +104,8 @@
 
             buildInputs = crossBuildInputs;
             nativeBuildInputs = [ pkgs.pkg-config ];
+
+            # buildType = "debug";
 
             CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER = "${pkgs.pkgsCross.aarch64-multiplatform.stdenv.cc}/bin/aarch64-unknown-linux-gnu-gcc";
             CARGO_BUILD_TARGET = "aarch64-unknown-linux-gnu";
@@ -130,25 +134,14 @@
             # Copy binary
             scp ${self.packages.${system}.wifi-setup-aarch64}/bin/wifi-setup $PI_HOST:$PI_PATH/
 
-            # Create and copy systemd service
-            cat > wifi-setup.service << EOF
-            [Unit]
-            Description=BLE WiFi Setup Service
-            After=bluetooth.target
-            StartLimitIntervalSec=0
+            # Update example systemd service file
+            cp systemd/wifi-setup.service.example systemd/wifi-setup.service
+            sed -i 's|ExecStart=/path/to/wifi-setup|ExecStart=$PI_PATH/wifi-setup|g' systemd/wifi-setup.service
 
-            [Service]
-            Type=simple
-            Restart=always
-            RestartSec=1
-            User=root
-            ExecStart=$PI_PATH/wifi-setup
+            # Copy service file
+            scp systemd/wifi-setup.service $PI_HOST:/tmp/
+            rm systemd/wifi-setup.service
 
-            [Install]
-            WantedBy=multi-user.target
-            EOF
-
-            scp wifi-setup.service $PI_HOST:/tmp/
             ssh $PI_HOST "sudo mv /tmp/wifi-setup.service /etc/systemd/system/ && \
                          sudo systemctl daemon-reload && \
                          sudo systemctl enable wifi-setup && \
